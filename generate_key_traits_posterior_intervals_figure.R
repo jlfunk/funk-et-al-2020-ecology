@@ -62,6 +62,5 @@ ggplot(df, aes(x = m, y = entity)) +
   geom_linerange(aes(xmin = ll, xmax = hh)) +
   geom_linerange(aes(xmin = l, xmax = h), size = 2.5) +
   theme_fivethirtyeight() +
-  ## xlim(-1, 1) |
-  ## geom_pointrange(aes(y=m, ymin=l, ymax=h), color="blue") +
   theme(panel.spacing = unit(2, "lines"))
+ggsave("results/figure-posterior-intervals-for-key-traits.pdf", width = 8.5, height = 11 * 0.6)
