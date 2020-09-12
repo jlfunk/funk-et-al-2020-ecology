@@ -30,12 +30,12 @@ df <- read_csv(data.file) %>%
   select(Species, Treatment, fitness, one_of(traits)) %>%
   mutate(
     Treatment = factor(Treatment, levels = c("L", "M", "H"), ordered = T),
-    ) %>%
+  ) %>%
   ## -- normalize fitness, and each trait, within each species
   group_by(Species) %>%
   mutate(
     fitness = (fitness - mean(fitness, na.rm = T)) / sd(fitness, na.rm = T),
-    ) %>%
+  ) %>%
   mutate(
     across(traits, ~ (. - mean(., na.rm = T)) / sd(., na.rm = T))
   )
