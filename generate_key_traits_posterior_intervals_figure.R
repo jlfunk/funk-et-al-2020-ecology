@@ -20,14 +20,15 @@ traits <- c(
   ## "wue"
 )
 
-plot.order <- c(
-  "Arca",
+entity.order <- c(
   "Avba",
   "Brma",
   "Brni",
+  "Mepo",
+  ##
+  "Arca",
   "Enca",
   "Isme",
-  "Mepo",
   "Saap",
   ##
   "L",
@@ -35,14 +36,27 @@ plot.order <- c(
   "H"
 )
 
-trait.labels <- list(
-  leaf.n = "Leaf N",
-  lma = "LMA"
+
+## -- FIXFIX: couldn't figure out how to extract the "keys" from this vector, so
+##    redundantly provided the `entity.order` vector above
+entity.labels <- c(
+  "Arca" = expression(italic("A. californica")),
+  "Avba" = expression(italic("A. barbata")),
+  "Brma" = expression(italic("B. madritensis")),
+  "Brni" = expression(italic("B. nigra")),
+  "Enca" = expression(italic("E. californica")),
+  "Isme" = expression(italic("I. menziesii")),
+  "Mepo" = expression(italic("M. polymorpha")),
+  "Saap" = expression(italic("S. apiana")),
+  ##
+  "L" = "Water: 50%",
+  "M" = "Water: 100%",
+  "H" = "Water: 150%"
 )
 
 fits <- list()
 for (trait in traits) {
-  fits[[trait]] <- readRDS(glue("results/no-intercept-normal-0-2/{trait}-fitted.rds"))
+  fits[[trait]] <- readRDS(glue("results/no-intercept-normal-0-2-scale-within-species/{trait}-fitted.rds"))
 }
 
 df <- fits %>%
@@ -50,17 +64,27 @@ df <- fits %>%
   filter(str_detect(parameter, "^r_")) %>%
   filter(!str_detect(parameter, "Intercept")) %>%
   extract(parameter, c("entity", "trait"), ".*\\[([[:alnum:]]+),([a-z.]+)\\]") %>%
-  mutate(entity = factor(entity, levels = rev(plot.order), ordered = T)) %>%
+  mutate(entity = factor(entity, levels = rev(entity.order), ordered = T)) %>%
   mutate(trait = recode(trait,
     leaf.n = "Leaf~N",
-    lma = "LMA", photo = "A[area]", rdiam = "Root~Diameter", rld = "Root~Length~Depth", rtd = "Root~Total~Depth"
-  ))
+    lma = "LMA",
+    photo = "A[area]",
+    rdiam = "Root~Diameter",
+    rld = "Root~Length~Density",
+    rtd = "Root~Tissue~Density"
+  )) %>%
+  mutate(
+    slope_class = if_else(entity %in% c("L", "M", "H"), "treatment", "trait")
+  )
 
-ggplot(df, aes(x = m, y = entity)) +
+ggplot(df, aes(x = m, y = entity, color = slope_class)) +
   facet_wrap(~trait, label = "label_parsed") +
-  geom_point(shape = 3, size = 4) +
+  geom_point(shape = 3, size = 3) +
   geom_linerange(aes(xmin = ll, xmax = hh)) +
-  geom_linerange(aes(xmin = l, xmax = h), size = 2.5) +
+  geom_linerange(aes(xmin = l, xmax = h), size = 2.0) +
+  scale_color_tableau() +
+  scale_y_discrete(labels = entity.labels) +
   theme_fivethirtyeight() +
-  theme(panel.spacing = unit(2, "lines"))
+  theme(panel.spacing = unit(2, "lines")) +
+  guides(color = FALSE)
 ggsave("results/figure-posterior-intervals-for-key-traits.pdf", width = 8.5, height = 11 * 0.6)
