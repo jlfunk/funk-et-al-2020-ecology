@@ -14,13 +14,12 @@ traits <- c(
   "phis2",
   "photo",
   "wp",
-  "wue"
+  "wue",
   ## root traits
   "rdiam",
   "rld",
-  "rtd"
-  "srl",
-
+  "rtd",
+  "srl"
 )
 
 entity.order <- c(
@@ -41,28 +40,38 @@ df <- fits %>%
   extract(parameter, c("entity"), "sd_([A-Za-z:]+)__Intercept") %>%
   mutate(entity = factor(entity, levels = rev(entity.order), ordered = T)) %>%
   mutate(trait = recode_factor(trait,
-                        canopy = "Canopy~Volume",
-                        g = "g",
-                        leaf.n = "Leaf~N",
-                        lma = "LMA",
-                        phis2 = "Phi[PSII]",
-                        photo = "A[area]",
-                        wp = "Psi[leaf]",
-                        wue = "WUE",
-                        rdiam = "R[diam]",
-                        rld = "RLD",
-                        rtd = "RTD",
-                        srl = "SRL",
-                        .ordered=T
-                        ))
+    photo = "A[area]",
+    g = "g",
+    leaf.n = "Leaf~N",
+    phis2 = "Phi[PSII]",
+    ##
+    wp = "Psi[leaf]",
+    wue = "WUE",
+    lma = "LMA",
+    rtd = "RTD",
+    ##
+    rld = "RLD",
+    srl = "SRL",
+    rdiam = "R[diam]",
+    canopy = "Canopy~volume",
+    .ordered = T
+  ))
 
 
 ggplot(df, aes(x = m, y = entity)) +
-  facet_wrap(~trait, ncol=4, label = "label_parsed") +
+  facet_wrap(~trait, ncol = 4, label = "label_parsed") +
   geom_point(shape = 3, size = 3) +
   geom_linerange(aes(xmin = ll, xmax = hh)) +
   geom_linerange(aes(xmin = l, xmax = h), size = 2.0) +
   theme_fivethirtyeight() +
-  theme(panel.spacing = unit(2, "lines"), axis.title.x = element_text(vjust=-2)) +
-  xlab("Standard Deviation of Standardized Trait Value")
+  theme(
+    panel.spacing = unit(2, "lines"),
+    plot.background = element_rect(fill = "white"),
+    panel.background = element_rect(fill = "white"),
+    strip.background = element_rect(fill = "white"),
+    axis.title = element_text(),
+    axis.title.y = element_blank()
+  ) +
+  xlab("Estimated Standard Deviation of Effects")
+
 ggsave("results/figure-variance-partitioning.pdf", width = 8.5, height = 8.5 * 0.60)
