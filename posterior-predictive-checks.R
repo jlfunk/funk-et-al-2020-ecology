@@ -90,13 +90,53 @@ grand_fitted <-
 
 
 ggplot(cbind(nd, all_fitted) %>%
-       mutate(Treatment = fct_recode(Treatment, `50%`="L", `100%`="M", `150%`="H")),
+       mutate(Treatment = factor(Treatment), Species = factor(Species)) %>%
+       mutate(
+         Treatment = recode_factor(Treatment,
+                                   L = "50*'%'",
+                                   M = "100*'%'",
+                                   H = "150*'%'",
+                                   .ordered = T
+                                   ),
+         Species = recode_factor(Species,
+                                 Arca = "italic(A.~californica)",
+                                 Avba = "italic(A.~barbata)",
+                                 Brma = "italic(B.~madritensis)",
+                                 Brni = "italic(B.~nigra)",
+                                 Enca = "italic(E.~californica)",
+                                 Isme = "italic(I.~menziesii)",
+                                 Mepo = "italic(M.~polymorpha)",
+                                 Saap = "italic(S.~apiana)",
+                                 .ordered=T
+                                 )
+         ),
        aes_string(x = trait, y = "Estimate")) +
-  facet_grid(Species ~ Treatment) +
+  facet_grid(Species ~ Treatment, label="label_parsed") +
   geom_ribbon(aes(ymin = Q2.5, ymax = Q97.5), fill = "lightblue") +
   geom_line() +
   geom_line(data = cbind(nd.grand, grand_fitted), aes_string(x = trait, y = "Estimate"), color = "red", alpha = 0.5, linetype = "dashed") +
-  geom_point(data = df %>% mutate(Treatment = fct_recode(Treatment, `50%`="L", `100%`="M", `150%`="H")), aes_string(x = trait, y = "fitness"), alpha = 0.5) +
+  geom_point(data = df %>%
+               mutate(Treatment = factor(Treatment), Species = factor(Species)) %>%
+               mutate(
+         Treatment = recode_factor(Treatment,
+                                   L = "50*'%'",
+                                   M = "100*'%'",
+                                   H = "150*'%'",
+                                   .ordered = T
+                                   ),
+         Species = recode_factor(Species,
+                                 Arca = "italic(A.~californica)",
+                                 Avba = "italic(A.~barbata)",
+                                 Brma = "italic(B.~madritensis)",
+                                 Brni = "italic(B.~nigra)",
+                                 Enca = "italic(E.~californica)",
+                                 Isme = "italic(I.~menziesii)",
+                                 Mepo = "italic(M.~polymorpha)",
+                                 Saap = "italic(S.~apiana)",
+                                 .ordered=T
+                                 )
+         ),
+             aes_string(x = trait, y = "fitness"), alpha = 0.5) +
   xlab(trait.map[[trait]]) +
   ylab("Reproductive Allocation") +
   theme_clean()
