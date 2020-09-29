@@ -15,12 +15,12 @@ traits <- c(
 )
 
 traits.alt <- c(
-  "canopy",
   "g",
   "phis2",
-  "srl",
   "wp",
-  "wue"
+  "wue",
+  "srl",
+  "canopy"
 )
 
 entity.order <- c(
@@ -89,8 +89,17 @@ ggplot(df, aes(x = m, y = entity, color = slope_class)) +
   scale_color_tableau() +
   scale_y_discrete(labels = entity.labels) +
   theme_fivethirtyeight() +
-  theme(panel.spacing = unit(2, "lines"), plot.background = element_rect(fill = "white"), panel.background = element_rect(fill = "white"), strip.background = element_rect(fill = "white")) +
-  guides(color = FALSE)
+  theme(
+    panel.spacing = unit(2, "lines"),
+    plot.background = element_rect(fill = "white"),
+    panel.background = element_rect(fill = "white"),
+    strip.background = element_rect(fill = "white"),
+    axis.title = element_text(),
+    axis.title.y = element_blank()
+  ) +
+  guides(color = FALSE) +
+  xlab("Estimated Species/Water Treatment Effect Size")
+
 ggsave("results/figure-posterior-intervals-for-key-traits.pdf", width = 8.5, height = 11 * 0.6)
 
 
@@ -106,12 +115,12 @@ df <- fits %>%
   extract(parameter, c("entity", "trait"), ".*\\[([[:alnum:]]+),([0-9a-z.]+)\\]") %>%
   mutate(entity = factor(entity, levels = rev(entity.order), ordered = T)) %>%
   mutate(trait = recode_factor(trait,
-    canopy = "Canopy~volume~-~Repro",
     g = "g~-~Repro",
     phis2 = "Phi[PSII]~-~Repro",
-    srl = "SRL~-~Repro",
     wp = "Psi[leaf]~-~Repro",
     wue = "WUE~-~Repro",
+    srl = "SRL~-~Repro",
+    canopy = "Canopy~volume~-~Repro",
     .ordered = T
   )) %>%
   mutate(
@@ -127,7 +136,16 @@ ggplot(df, aes(x = m, y = entity, color = slope_class)) +
   scale_color_tableau() +
   scale_y_discrete(labels = entity.labels) +
   theme_fivethirtyeight() +
-  theme(panel.spacing = unit(2, "lines"), plot.background = element_rect(fill = "white"), panel.background = element_rect(fill = "white"), strip.background = element_rect(fill = "white")) +
+  theme(
+    panel.spacing = unit(2, "lines"),
+    plot.background = element_rect(fill = "white"),
+    panel.background = element_rect(fill = "white"),
+    strip.background = element_rect(fill = "white"),
+    axis.title = element_text(),
+    axis.title.y = element_blank()
+  ) +
   theme(panel.spacing = unit(2, "lines")) +
-  guides(color = FALSE)
+  guides(color = FALSE) +
+  xlab("Estimated Species/Water Treatment Effect Size")
+
 ggsave("results/figure-posterior-intervals-for-alt-traits.pdf", width = 8.5, height = 11 * 0.6)
