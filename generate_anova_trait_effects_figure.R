@@ -1,0 +1,101 @@
+library(tidyverse)
+library(brms)
+library(bayesplot)
+library(glue)
+library(ggthemes)
+library(purrr)
+
+traits <- c(
+  ## leaf traits
+  "canopy",
+  "g",
+  "leaf.n",
+  "lma",
+  "phis2",
+  "photo",
+  "wp",
+  "wue",
+  ## root traits
+  "rdiam",
+  "rld",
+  "rtd",
+  "srl"
+)
+
+entity.order <- c(
+  "Arca",
+  "Avba",
+  "Brma",
+  "Brni",
+  "Enca",
+  "Isme",
+  "Mepo",
+  "Saap"
+)
+
+## -- FIXFIX: couldn't figure out how to extract the "keys" from this vector, so
+##    redundantly provided the `entity.order` vector above
+entity.labels <- c(
+  "Arca" = expression(italic("A. californica")),
+  "Avba" = expression(italic("A. barbata")),
+  "Brma" = expression(italic("B. madritensis")),
+  "Brni" = expression(italic("B. nigra")),
+  "Enca" = expression(italic("E. californica")),
+  "Isme" = expression(italic("I. menziesii")),
+  "Mepo" = expression(italic("M. polymorpha")),
+  "Saap" = expression(italic("S. apiana")),
+  ##
+  "L" = "Water: 50%",
+  "M" = "Water: 100%",
+  "H" = "Water: 150%"
+)
+
+fits <- list()
+for (trait in traits) {
+  fits[[trait]] <- readRDS(glue("results/anova/{trait}-anova.rds"))
+}
+
+df <- fits %>%
+  purrr::map_dfr(mcmc_intervals_data, .id = "trait") %>%
+  filter(str_detect(parameter, "^r_Species\\[")) %>%
+  extract(parameter, c("entity"), "r_Species\\[([A-Za-z:]+),Intercept\\]") %>%
+  mutate(entity = factor(entity, levels = rev(entity.order), ordered = T)) %>%
+  mutate(trait = recode_factor(trait,
+    ## row 1
+    photo = "A[area]",
+    g = "g",
+    phis2 = "Phi[PSII]",
+    leaf.n = "Leaf~N",
+    ## row 2
+    wp = "Psi[leaf]",
+    wue = "WUE",
+    lma = "LMA",
+    rtd = "RTD",
+    ## row 3
+    rld = "RLD",
+    srl = "SRL",
+    rdiam = "R[diam]",
+    canopy = "Canopy~volume",
+    .ordered = T
+  ))
+
+
+ggplot(df, aes(x = m, y = entity)) +
+  facet_wrap(~trait, ncol = 4, label = "label_parsed") +
+  geom_point(shape = 3, size = 3) +
+  geom_linerange(aes(xmin = ll, xmax = hh)) +
+  geom_linerange(aes(xmin = l, xmax = h), size = 2.0) +
+  scale_y_discrete(labels = entity.labels) +
+  theme_fivethirtyeight() +
+  theme(
+    panel.spacing = unit(2, "lines"),
+    plot.background = element_rect(fill = "white"),
+    panel.background = element_rect(fill = "white"),
+    strip.background = element_rect(fill = "white"),
+    axis.title = element_text(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(vjust = -2)
+  ) +
+  xlab("Estimated Standardized Trait Effect Size")
+
+ggsave("results/figure-anova-trait-effects.pdf", width = 8.5, height = 8.5 * 0.80)
