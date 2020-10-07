@@ -23,13 +23,14 @@ traits <- c(
 )
 
 entity.order <- c(
-  "Arca",
   "Avba",
   "Brma",
   "Brni",
+  "Mepo",
+  ##
+  "Arca",
   "Enca",
   "Isme",
-  "Mepo",
   "Saap"
 )
 
@@ -96,6 +97,6 @@ ggplot(df, aes(x = m, y = entity)) +
     axis.title.y = element_blank(),
     axis.title.x = element_text(vjust = -2)
   ) +
-  xlab("Estimated Standardized Trait Effect Size")
+  xlab("Estimated effect size of standardized trait")
 
 ggsave("results/figure-anova-trait-effects.pdf", width = 8.5, height = 8.5 * 0.80)
