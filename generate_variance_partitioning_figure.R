@@ -72,6 +72,6 @@ ggplot(df, aes(x = m, y = entity)) +
     axis.title = element_text(),
     axis.title.y = element_blank()
   ) +
-  xlab("Estimated Standard Deviation of Effects")
+  xlab("Estimated standard deviation of effects")
 
 ggsave("results/figure-variance-partitioning.pdf", width = 8.5, height = 8.5 * 0.60)

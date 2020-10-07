@@ -98,7 +98,7 @@ ggplot(df, aes(x = m, y = entity, color = slope_class)) +
     axis.title.y = element_blank()
   ) +
   guides(color = FALSE) +
-  xlab("Estimated Species/Water Treatment Effect Size")
+  xlab("Estimated effect size")
 
 ggsave("results/figure-posterior-intervals-for-key-traits.pdf", width = 8.5, height = 11 * 0.6)
 
@@ -144,8 +144,7 @@ ggplot(df, aes(x = m, y = entity, color = slope_class)) +
     axis.title = element_text(),
     axis.title.y = element_blank()
   ) +
-  theme(panel.spacing = unit(2, "lines")) +
   guides(color = FALSE) +
-  xlab("Estimated Species/Water Treatment Effect Size")
+  xlab("Estimated effect size")
 
 ggsave("results/figure-posterior-intervals-for-alt-traits.pdf", width = 8.5, height = 11 * 0.6)
