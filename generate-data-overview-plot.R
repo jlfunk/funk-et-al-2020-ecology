@@ -4,7 +4,7 @@ library(bayesplot)
 library(glue)
 library(ggthemes)
 
-data.file <- "/storage/Dropbox/Macphunk/jen-drought-and-fitness/REC_raw_all_nooutlier2.csv"
+data.file <- "./REC_raw_all_nooutlier2.csv"
 traits <- c(
   "canopy",
   "g",

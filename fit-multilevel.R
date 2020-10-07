@@ -8,7 +8,7 @@ args <- commandArgs(trailingOnly = T)
 index <- as.integer(args[1])
 stopifnot(index >= 1)
 
-data.file <- "/storage/Dropbox/Macphunk/jen-drought-and-fitness/REC_raw_all_nooutlier2.csv"
+data.file <- "./REC_raw_all_nooutlier2.csv"
 traits <- c(
   "canopy",
   "g",
@@ -31,11 +31,13 @@ df <- read_csv(data.file) %>%
   mutate(
     Treatment = factor(Treatment, levels = c("L", "M", "H"), ordered = T),
   ) %>%
-  ## -- normalize fitness, and each trait, within each species
+  ## -- normalize fitness within each species
   group_by(Species) %>%
   mutate(
     fitness = (fitness - mean(fitness, na.rm = T)) / sd(fitness, na.rm = T),
   ) %>%
+  ## -- normalize each trait within each species
+  group_by(Species) %>%
   mutate(
     across(traits, ~ (. - mean(., na.rm = T)) / sd(., na.rm = T))
   )

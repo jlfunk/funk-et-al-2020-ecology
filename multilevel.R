@@ -2,7 +2,7 @@ library(tidyverse)
 library(brms)
 library(bayesplot)
 
-df <- read_csv("/storage/Dropbox/Macphunk/jen-drought-and-fitness/REC_raw_all_nooutlier2.csv") %>%
+df <- read_csv("./REC_raw_all_nooutlier2.csv") %>%
   select(Species, Treatment, photo, fitness) %>%
   mutate(
     Treatment = factor(Treatment, levels = c("L", "M", "H"), ordered = T),

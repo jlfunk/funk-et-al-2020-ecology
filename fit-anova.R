@@ -8,7 +8,7 @@ args <- commandArgs(trailingOnly = T)
 index <- as.integer(args[1])
 stopifnot(index >= 1)
 
-data.file <- "/storage/Dropbox/Macphunk/jen-drought-and-fitness/REC_raw_all_nooutlier2.csv"
+data.file <- "./REC_raw_all_nooutlier2.csv"
 traits <- c(
   "canopy",
   "g",
@@ -30,7 +30,7 @@ df <- read_csv(data.file) %>%
   select(Species, Treatment, fitness, one_of(traits)) %>%
   mutate(
     Treatment = factor(Treatment, levels = c("L", "M", "H"), ordered = T),
-    ) %>%
+  ) %>%
   mutate(
     across(traits, ~ (. - mean(., na.rm = T)) / sd(., na.rm = T))
   )
@@ -53,16 +53,14 @@ bfit <- brm(
   seed = 99
 )
 
-mcmc_plot(bfit, type="neff") +
+mcmc_plot(bfit, type = "neff") +
   theme_fivethirtyeight()
- ggsave(glue("results/{trait}-neff-anova.pdf"), width = 8, height = 10)
+ggsave(glue("results/{trait}-neff-anova.pdf"), width = 8, height = 10)
 
-mcmc_plot(bfit, type="intervals", pars = c("^sd_")) +
+mcmc_plot(bfit, type = "intervals", pars = c("^sd_")) +
   theme(axis.text.y = element_text(hjust = 0)) +
   theme_fivethirtyeight() +
   ggtitle(glue("Variance Partitioning for [{trait}]"))
 ggsave(glue("results/{trait}-anova.pdf"), width = 8, height = 4)
 
 saveRDS(bfit, glue("results/{trait}-anova.rds"))
-
-
