@@ -42,8 +42,8 @@ df <- fits %>%
   mutate(trait = recode_factor(trait,
     photo = "A[area]",
     g = "g",
-    leaf.n = "Leaf~N",
     phis2 = "Phi[PSII]",
+    leaf.n = "Leaf~N",
     ##
     wp = "Psi[leaf]",
     wue = "WUE",
