@@ -8,7 +8,7 @@ args <- commandArgs(trailingOnly = T)
 index <- as.integer(args[1])
 stopifnot(index >= 1)
 
-data.file <- "./REC_raw_all_nooutlier2.csv"
+data.file <- "./SCREC-trait-data.csv"
 traits <- c(
   "canopy",
   "g",

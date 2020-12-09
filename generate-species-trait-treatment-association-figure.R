@@ -20,7 +20,7 @@ traits <- c(
 response <- "logfitness"
 
 
-data.file <- "./REC_raw_all_nooutlier2.csv"
+data.file <- "./SCREC-trait-data.csv"
 
 df <- readr::read_csv(data.file) %>%
   mutate(

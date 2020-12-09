@@ -1,29 +1,31 @@
-# README #
+## Analyses and Figures for Funk et al, Ecology (2021)
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This repo contains the source code to reproduce the analyses and figures for the
+manuscript "Plant traits are differentially linked to performance in a semi-arid
+ecosystem", to be published in *Ecology* in 2021.
 
-### What is this repository for? ###
+### Requirements
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+- A unix-style system that can run `make`.
+- Installation of the `R` interpreter, and these packages:
+  - `bayesplot`
+  - `brms`
+  - `ggthemes`
+  - `glue`
+  - `tidyverse`
+- (For conversion from PDF to TIFF) `ImageMagick`
 
-### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### Usage
 
-### Contribution guidelines ###
+Consult the [Makefile](./Makefile) to see the available recipes.
 
-* Writing tests
-* Code review
-* Other guidelines
+For example, running:
 
-### Who do I talk to? ###
+    make multilevel-fits
 
-* Repo owner or admin
-* Other community or team contact
+will reproduce the "Model 2" multilevel fits from the paper.
+
+
+The scripts beginning with `fit` perform the analyses, and the scripts beginning
+with `generate` create the figures.
