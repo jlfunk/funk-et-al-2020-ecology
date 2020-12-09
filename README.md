@@ -1,4 +1,4 @@
-## Analyses and Figures for Funk et al, Ecology (2021)
+## Analyses and Figures for Funk et al. Ecology (2021)
 
 This repo contains the source code to reproduce the analyses and figures for the
 manuscript "Plant traits are differentially linked to performance in a semi-arid
